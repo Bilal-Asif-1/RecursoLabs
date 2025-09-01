@@ -1,18 +1,8 @@
-/**
- * Product Query Controller
- * Handles listing and filtering products
- */
-
 const BaseController = require('../base/BaseController');
 const { productService } = require('../../services');
 
 class ProductQueryController extends BaseController {
-  /**
-   * Get all products with pagination
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getAllProducts = async (req, res, next) => {
     try {
       const queryOptions = req.query;
@@ -37,12 +27,7 @@ class ProductQueryController extends BaseController {
     }
   };
 
-  /**
-   * Get products by category
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getProductsByCategory = async (req, res, next) => {
     try {
       const { category } = req.params;
@@ -59,12 +44,7 @@ class ProductQueryController extends BaseController {
     }
   };
 
-  /**
-   * Get user's products
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getUserProducts = async (req, res, next) => {
     try {
       const userId = req.userId;

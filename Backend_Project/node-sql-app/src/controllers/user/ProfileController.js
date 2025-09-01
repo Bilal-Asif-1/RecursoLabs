@@ -1,17 +1,8 @@
-/**
- * User Profile Controller
- */
-
 const BaseController = require('../base/BaseController');
 const { userService } = require('../../services');
 
 class ProfileController extends BaseController {
-  /**
-   * Get current user profile
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getProfile = async (req, res, next) => {
     try {
       const userId = req.userId;
@@ -27,12 +18,7 @@ class ProfileController extends BaseController {
     }
   };
 
-  /**
-   * Update user profile
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   updateProfile = async (req, res, next) => {
     try {
       const { name, email } = req.body;
@@ -57,12 +43,7 @@ class ProfileController extends BaseController {
     }
   };
 
-  /**
-   * Change user password
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   changePassword = async (req, res, next) => {
     try {
       const { currentPassword, newPassword } = req.body;

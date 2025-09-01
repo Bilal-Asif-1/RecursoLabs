@@ -1,19 +1,5 @@
-const { Sequelize } = require("sequelize");
-const config = require("../config/config.js");
-
-const env = process.env.NODE_ENV || "development";
-const dbConfig = config[env];
-
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  {
-    host: dbConfig.host,
-    dialect: 'mysql', // Explicitly set dialect
-    logging: false, // Set to console.log to see SQL queries
-  }
-);
+// Import database configuration
+const { sequelize, Sequelize } = require("../config/database.js");
 
 // Import models
 const User = require("./user.js")(sequelize, Sequelize.DataTypes);

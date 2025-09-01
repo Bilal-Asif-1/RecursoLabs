@@ -1,14 +1,32 @@
+/**
+ * Database Configuration
+ */
+
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const config = require('./config');
+
+// Create Sequelize instance with configuration from environment
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = config[env];
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
   {
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT
+    host: dbConfig.host,
+    dialect: dbConfig.dialect,
+    logging: env === 'development' ? console.log : false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 );
 
-module.exports = sequelize;
+module.exports = {
+  sequelize,
+  Sequelize
+};
