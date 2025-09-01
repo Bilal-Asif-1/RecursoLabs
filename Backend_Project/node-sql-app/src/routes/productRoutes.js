@@ -1,28 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
-const auth = require('../../middleware/auth');
+const { ProductController, ProductQueryController } = require('../controllers/product');
+const auth = require('../middleware/auth');
 
 // Public routes (no authentication required)
-router.get('/', productController.getAllProducts);
-router.get('/category/:category', productController.getProductsByCategory);
+router.get('/', ProductQueryController.getAllProducts);
+router.get('/category/:category', ProductQueryController.getProductsByCategory);
 
 // Protected routes (authentication required)
 router.use(auth);
 
 // Get user's products (must come before /:id route)
-router.get('/user/my-products', productController.getUserProducts);
+router.get('/user/my-products', ProductQueryController.getUserProducts);
 
 // Create product
-router.post('/', productController.createProduct);
+router.post('/', ProductController.createProduct);
 
 // Get Product by ID (must come after specific routes)
-router.get('/:id', productController.getProductById);
+router.get('/:id', ProductController.getProductById);
 
 // Update product
-router.put('/:id', productController.updateProduct);
+router.put('/:id', ProductController.updateProduct);
 
 // Delete product
-router.delete('/:id', productController.deleteProduct);
+router.delete('/:id', ProductController.deleteProduct);
 
 module.exports = router;

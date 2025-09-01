@@ -1,7 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { sequelize } = require("./models");
-const errorHandler = require("../middleware/errorHandler");
+const errorHandler = require("./middleware/errorHandler");
+const responseHandler = require("./middleware/responseHandler");
 const path = require("path");
 
 // Load environment variables
@@ -12,6 +13,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(responseHandler);
 
 // CORS middleware (for frontend integration)
 app.use((req, res, next) => {
@@ -26,16 +28,14 @@ app.use((req, res, next) => {
   }
 });
 
-// Serve static files from frontend directory
-app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
+// Frontend static files serving removed - using Postman for API testing only
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is running',
-    timestamp: new Date().toISOString(),
-    frontend: 'http://localhost:5000/frontend/'
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -57,9 +57,13 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 
-// Serve frontend as default route
+// Default route now returns API information
 app.get('/', (req, res) => {
-  res.redirect('/frontend/');
+  res.json({
+    success: true,
+    message: 'API Server Running',
+    documentation: 'Use Postman collection for testing endpoints'
+  });
 });
 
 // 404 handler
@@ -67,7 +71,7 @@ app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
     message: `Route ${req.originalUrl} not found`,
-    note: 'Try visiting /frontend/ for the web interface'
+    note: 'Please check the API documentation for valid endpoints'
   });
 });
 
@@ -90,9 +94,8 @@ const startServer = async () => {
     // Start server
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📖 Health Check: http://localhost:${PORT}/health`);
-      console.log(`🌐 Frontend: http://localhost:${PORT}/frontend/`);
-      console.log(`🧪 Test API: http://localhost:${PORT}/api/test`);
+    console.log(`📖 Health Check: http://localhost:${PORT}/health`);
+    console.log(`🧪 Test API: http://localhost:${PORT}/api/test`);
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error);

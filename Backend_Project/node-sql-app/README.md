@@ -1,6 +1,6 @@
 # Node.js & SQL CRUD Project with JWT Authentication
 
-A complete RESTful API built with Node.js, Express, MySQL, and Sequelize ORM, featuring user authentication with JWT tokens and full CRUD operations for products.
+A complete RESTful API built with Node.js, Express, MySQL, and Sequelize ORM, featuring user authentication with JWT tokens and full CRUD operations for products. The project follows a modular architecture for better organization and maintainability.
 
 ## 🚀 Features
 
@@ -13,6 +13,8 @@ A complete RESTful API built with Node.js, Express, MySQL, and Sequelize ORM, fe
 - **Pagination**: Built-in pagination for list endpoints
 - **Search & Filtering**: Search products by name/description and filter by category
 - **Authorization**: Route protection and user-specific operations
+- **Service Layer**: Separation of business logic from controllers
+- **Utility Helpers**: Common functions for response formatting and validation
 
 ## 📋 Prerequisites
 
@@ -48,6 +50,76 @@ A complete RESTful API built with Node.js, Express, MySQL, and Sequelize ORM, fe
 
 4. **Database Setup**
    ```bash
+   npm run migrate     # Run database migrations
+   npm run seed        # Seed the database with sample data (optional)
+   ```
+
+## 📁 Project Structure
+
+The project follows a modular architecture for better organization and maintainability:
+
+```
+node-sql-app/
+├── .sequelizerc           # Sequelize configuration paths
+├── package.json           # Project dependencies and scripts
+├── server.js              # Application entry point
+├── migrations/            # Database migrations
+├── seeders/               # Database seed files
+├── src/
+│   ├── config/            # Configuration files
+│   │   ├── config.js      # Database configuration
+│   │   └── database.js    # Sequelize instance
+│   ├── controllers/       # Request handlers
+│   │   ├── base/          # Base controller classes
+│   │   │   └── BaseController.js # Common controller functionality
+│   │   ├── product/       # Product controllers
+│   │   │   ├── ProductController.js # Product CRUD operations
+│   │   │   ├── ProductQueryController.js # Product queries and filtering
+│   │   │   └── index.js   # Product controllers export
+│   │   ├── user/          # User controllers
+│   │   │   ├── AuthController.js # Authentication operations
+│   │   │   ├── ProfileController.js # User profile operations
+│   │   │   ├── AdminController.js # Admin user operations
+│   │   │   └── index.js   # User controllers export
+│   │   └── index.js       # Controllers export
+│   ├── middleware/        # Custom middleware
+│   │   ├── auth.js        # Authentication middleware
+│   │   ├── errorHandler.js # Error handling middleware
+│   │   ├── responseHandler.js # Response standardization middleware
+│   │   └── roleCheck.js   # Role-based authorization
+│   ├── models/            # Database models
+│   │   ├── index.js       # Models initialization
+│   │   ├── product.js     # Product model
+│   │   └── user.js        # User model
+│   ├── routes/            # API routes
+│   │   ├── authRoutes.js  # Authentication routes
+│   │   ├── productRoutes.js # Product routes
+│   │   └── userRoutes.js  # User routes
+│   ├── services/          # Business logic
+│   │   ├── authService.js # Authentication service
+│   │   ├── productService.js # Product service
+│   │   ├── userService.js # User service
+│   │   └── index.js       # Services export
+│   └── utils/             # Utility functions
+│       ├── helpers/       # Helper functions
+│       │   ├── responseFormatter.js # API response formatting
+│       │   └── validationHelper.js  # Data validation
+│       └── index.js       # Utils export
+```
+
+## 🏗️ Architecture Improvements
+
+The project has been restructured for better modularity and maintainability:
+
+1. **Modular Controllers**: Organized controllers into domain-specific modules with a base controller class
+2. **Service Layer**: Added a service layer to separate business logic from controllers
+3. **Response Standardization**: Added response handler middleware for consistent API responses
+4. **Middleware Organization**: Moved middleware into the src directory for better organization
+5. **Configuration Management**: Centralized configuration in src/config
+6. **Utility Functions**: Added helper utilities for common operations
+7. **Role-Based Authorization**: Implemented role checking middleware for admin routes
+
+These improvements make the codebase more maintainable, testable, and scalable.
    # Create database
    mysql -u root -p -e "CREATE DATABASE crud_app;"
    

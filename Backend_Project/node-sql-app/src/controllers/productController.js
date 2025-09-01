@@ -1,29 +1,12 @@
-const { Product, User } = require('../models');
-const { Op } = require('sequelize');
+const { productService } = require('../services');
 
 // Create Product
 exports.createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const productData = req.body;
     const userId = req.userId;
 
-    const product = await Product.create({
-      name,
-      description,
-      price,
-      category,
-      stock,
-      userId
-    });
-
-    // Fetch the created product with user info
-    const createdProduct = await Product.findByPk(product.id, {
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }]
-    });
+    const createdProduct = await productService.createProduct(productData, userId);
 
     res.status(201).json({
       success: true,
@@ -38,43 +21,20 @@ exports.createProduct = async (req, res, next) => {
 // Get All Products
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, search, category, sortBy = 'createdAt', sortOrder = 'DESC' } = req.query;
+    const queryOptions = req.query;
     
-    const offset = (page - 1) * limit;
+    const result = await productService.getAllProducts(queryOptions);
     
-    // Build where clause
-    const whereClause = {};
-    if (search) {
-      whereClause[Op.or] = [
-        { name: { [Op.like]: `%${search}%` } },
-        { description: { [Op.like]: `%${search}%` } }
-      ];
-    }
-    if (category) {
-      whereClause.category = category;
-    }
-
-    const products = await Product.findAndCountAll({
-      where: whereClause,
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }],
-      order: [[sortBy, sortOrder]],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    res.json({
+    res.status(200).json({
       success: true,
+      message: 'Products retrieved successfully',
       data: {
-        products: products.rows,
+        products: result.products,
         pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(products.count / limit),
-          totalItems: products.count,
-          itemsPerPage: parseInt(limit)
+          total: result.count,
+          totalPages: result.totalPages,
+          currentPage: result.currentPage,
+          limit: parseInt(queryOptions.limit || 10)
         }
       }
     });
@@ -83,29 +43,58 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
-// Get Product by ID
+// Get Product By ID
 exports.getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const product = await Product.findByPk(id, {
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }]
-    });
-
+    
+    const product = await productService.getProductById(id);
+    
     if (!product) {
       return res.status(404).json({
         success: false,
         message: 'Product not found'
       });
     }
-
-    res.json({
+    
+    res.status(200).json({
       success: true,
+      message: 'Product retrieved successfully',
       data: { product }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Products By Category
+exports.getProductsByCategory = async (req, res, next) => {
+  try {
+    const { category } = req.params;
+    
+    const products = await productService.getProductsByCategory(category);
+    
+    res.status(200).json({
+      success: true,
+      message: `Products in category '${category}' retrieved successfully`,
+      data: { products }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get User Products
+exports.getUserProducts = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    
+    const products = await productService.getUserProducts(userId);
+    
+    res.status(200).json({
+      success: true,
+      message: 'User products retrieved successfully',
+      data: { products }
     });
   } catch (error) {
     next(error);
@@ -116,43 +105,19 @@ exports.getProductById = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, description, price, category, stock } = req.body;
+    const productData = req.body;
     const userId = req.userId;
-
-    const product = await Product.findByPk(id);
-    if (!product) {
+    
+    const updatedProduct = await productService.updateProduct(id, productData, userId);
+    
+    if (!updatedProduct) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found or you are not authorized to update this product'
       });
     }
-
-    // Check if user owns the product
-    if (product.userId !== userId) {
-      return res.status(403).json({
-        success: false,
-        message: 'You can only update your own products'
-      });
-    }
-
-    await product.update({
-      name,
-      description,
-      price,
-      category,
-      stock
-    });
-
-    // Fetch updated product with user info
-    const updatedProduct = await Product.findByPk(id, {
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }]
-    });
-
-    res.json({
+    
+    res.status(200).json({
       success: true,
       message: 'Product updated successfully',
       data: { product: updatedProduct }
@@ -167,102 +132,19 @@ exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userId = req.userId;
-
-    const product = await Product.findByPk(id);
-    if (!product) {
+    
+    const success = await productService.deleteProduct(id, userId);
+    
+    if (!success) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: 'Product not found or you are not authorized to delete this product'
       });
     }
-
-    // Check if user owns the product
-    if (product.userId !== userId) {
-      return res.status(403).json({
-        success: false,
-        message: 'You can only delete your own products'
-      });
-    }
-
-    await product.destroy();
-
-    res.json({
+    
+    res.status(200).json({
       success: true,
       message: 'Product deleted successfully'
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// Get User's Products
-exports.getUserProducts = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-    const { page = 1, limit = 10 } = req.query;
-    
-    const offset = (page - 1) * limit;
-
-    const products = await Product.findAndCountAll({
-      where: { userId },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }],
-      order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    res.json({
-      success: true,
-      data: {
-        products: products.rows,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(products.count / limit),
-          totalItems: products.count,
-          itemsPerPage: parseInt(limit)
-        }
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// Get Products by Category
-exports.getProductsByCategory = async (req, res, next) => {
-  try {
-    const { category } = req.params;
-    const { page = 1, limit = 10 } = req.query;
-    
-    const offset = (page - 1) * limit;
-
-    const products = await Product.findAndCountAll({
-      where: { category },
-      include: [{
-        model: User,
-        as: 'user',
-        attributes: ['id', 'name', 'email']
-      }],
-      order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    res.json({
-      success: true,
-      data: {
-        products: products.rows,
-        pagination: {
-          currentPage: parseInt(page),
-          totalPages: Math.ceil(products.count / limit),
-          totalItems: products.count,
-          itemsPerPage: parseInt(limit)
-        }
-      }
     });
   } catch (error) {
     next(error);
