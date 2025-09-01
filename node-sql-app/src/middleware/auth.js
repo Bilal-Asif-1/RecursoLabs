@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../src/models');
+const { User } = require('../models');
 
 const auth = async (req, res, next) => {
   try {
@@ -53,7 +53,7 @@ const auth = async (req, res, next) => {
     }
     return res.status(500).json({ 
       success: false, 
-      message: 'Internal server error.' 
+      message: 'Server error during authentication.' 
     });
   }
 };
