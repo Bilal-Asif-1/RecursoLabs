@@ -1,17 +1,8 @@
-/**
- * User Authentication Controller
- */
-
 const BaseController = require('../base/BaseController');
 const { userService } = require('../../services');
 
 class AuthController extends BaseController {
-  /**
-   * Register a new user
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   register = async (req, res, next) => {
     try {
       const userData = req.body;
@@ -36,12 +27,7 @@ class AuthController extends BaseController {
     }
   };
 
-  /**
-   * Login user
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   login = async (req, res, next) => {
     try {
       const credentials = req.body;

@@ -1,18 +1,8 @@
-/**
- * User Admin Controller
- * Handles admin operations for user management
- */
-
 const BaseController = require('../base/BaseController');
 const { userService } = require('../../services');
 
 class AdminController extends BaseController {
-  /**
-   * Get all users (Admin only)
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getAllUsers = async (req, res, next) => {
     try {
       const users = await userService.getAllUsers();
@@ -26,12 +16,7 @@ class AdminController extends BaseController {
     }
   };
 
-  /**
-   * Get user by ID
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getUserById = async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -48,12 +33,7 @@ class AdminController extends BaseController {
     }
   };
 
-  /**
-   * Delete user
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   deleteUser = async (req, res, next) => {
     try {
       const { id } = req.params;

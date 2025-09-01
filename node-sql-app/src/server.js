@@ -1,12 +1,11 @@
 const express = require("express");
-const dotenv = require("dotenv");
-const { sequelize } = require("./models");
+const { sequelize } = require("./config/database");
 const errorHandler = require("./middleware/errorHandler");
 const responseHandler = require("./middleware/responseHandler");
-const path = require("path");
-
-// Load environment variables
-dotenv.config();
+const cors = require("cors");
+const { body, validationResult } = require("express-validator");
+const configureRoutes = require("./routes");
+const appConfig = require("./config/app");
 
 const app = express();
 
@@ -15,72 +14,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(responseHandler);
 
-// CORS middleware (for frontend integration)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+// CORS middleware (using cors package)
+app.use(cors(appConfig.cors));
 
 // Frontend static files serving removed - using Postman for API testing only
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Test endpoint
-app.get('/api/test', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API is working!',
-    endpoints: {
-      auth: '/api/auth',
-      users: '/api/users', 
-      products: '/api/products'
-    }
-  });
-});
-
-// API Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
-
-// Default route now returns API information
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API Server Running',
-    documentation: 'Use Postman collection for testing endpoints'
-  });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-    note: 'Please check the API documentation for valid endpoints'
-  });
-});
+// Configure all routes
+configureRoutes(app);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
 // Database connection and server start
-const PORT = process.env.PORT || 5000;
-
 const startServer = async () => {
   try {
     // Test database connection
@@ -92,10 +37,10 @@ const startServer = async () => {
     console.log('✅ Database synchronized successfully.');
     
     // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📖 Health Check: http://localhost:${PORT}/health`);
-    console.log(`🧪 Test API: http://localhost:${PORT}/api/test`);
+    app.listen(appConfig.port, () => {
+      console.log(`🚀 Server running on port ${appConfig.port}`);
+      console.log(`📖 Health Check: http://localhost:${appConfig.port}/health`);
+      console.log(`🧪 Test API: http://localhost:${appConfig.port}/api/test`);
     });
   } catch (error) {
     console.error('❌ Unable to start server:', error);

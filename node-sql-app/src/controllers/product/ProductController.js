@@ -1,18 +1,8 @@
-/**
- * Product Controller
- * Handles basic CRUD operations for products
- */
-
 const BaseController = require('../base/BaseController');
 const { productService } = require('../../services');
 
 class ProductController extends BaseController {
-  /**
-   * Create a new product
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   createProduct = async (req, res, next) => {
     try {
       const productData = req.body;
@@ -31,12 +21,7 @@ class ProductController extends BaseController {
     }
   };
 
-  /**
-   * Get product by ID
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   getProductById = async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -57,12 +42,7 @@ class ProductController extends BaseController {
     }
   };
 
-  /**
-   * Update product
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   updateProduct = async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -89,12 +69,7 @@ class ProductController extends BaseController {
     }
   };
 
-  /**
-   * Delete product
-   * @param {object} req - Express request object
-   * @param {object} res - Express response object
-   * @param {function} next - Express next middleware function
-   */
+
   deleteProduct = async (req, res, next) => {
     try {
       const { id } = req.params;
