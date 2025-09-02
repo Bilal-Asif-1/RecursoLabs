@@ -1,13 +1,8 @@
-/**
- * Response Handler Middleware
- * Standardizes API responses across the application
- */
+
 
 const { successResponse, errorResponse, paginationResponse } = require('../utils/helpers/responseFormatter');
 
-/**
- * Adds response formatting methods to the response object
- */
+
 const responseHandler = (req, res, next) => {
   // Add success response method
   res.success = (data, message = 'Success', statusCode = 200) => {

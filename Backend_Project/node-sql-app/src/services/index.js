@@ -1,7 +1,3 @@
-/**
- * Services Index - Export all services
- */
-
 const productService = require('./productService');
 const userService = require('./userService');
 const authService = require('./authService');

@@ -1,6 +1,3 @@
-/**
- * Export all utility helpers
- */
 
 const responseFormatter = require('./helpers/responseFormatter');
 const validationHelper = require('./helpers/validationHelper');

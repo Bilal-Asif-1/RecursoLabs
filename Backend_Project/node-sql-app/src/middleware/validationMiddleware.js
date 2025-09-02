@@ -1,16 +1,8 @@
-/**
- * Validation Middleware
- * Provides validation rules and middleware for different routes
- */
+
 
 const { body, param, query, validationResult } = require('express-validator');
 
-/**
- * Middleware to check validation results
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next function
- */
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -19,9 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-/**
- * User registration validation rules
- */
 const registerValidation = [
   body('name')
     .notEmpty().withMessage('Name is required')
@@ -35,9 +24,7 @@ const registerValidation = [
   validate
 ];
 
-/**
- * User login validation rules
- */
+
 const loginValidation = [
   body('email')
     .notEmpty().withMessage('Email is required')
@@ -47,9 +34,7 @@ const loginValidation = [
   validate
 ];
 
-/**
- * Profile update validation rules
- */
+
 const profileUpdateValidation = [
   body('name')
     .optional()
@@ -60,9 +45,7 @@ const profileUpdateValidation = [
   validate
 ];
 
-/**
- * Password change validation rules
- */
+
 const passwordChangeValidation = [
   body('currentPassword')
     .notEmpty().withMessage('Current password is required'),
@@ -72,9 +55,7 @@ const passwordChangeValidation = [
   validate
 ];
 
-/**
- * Product creation validation rules
- */
+
 const productCreateValidation = [
   body('name')
     .notEmpty().withMessage('Product name is required')
@@ -92,9 +73,7 @@ const productCreateValidation = [
   validate
 ];
 
-/**
- * Product update validation rules
- */
+
 const productUpdateValidation = [
   body('name')
     .optional()
@@ -112,18 +91,13 @@ const productUpdateValidation = [
   validate
 ];
 
-/**
- * ID parameter validation
- */
 const idParamValidation = [
   param('id')
     .isInt().withMessage('ID must be an integer'),
   validate
 ];
 
-/**
- * Pagination query validation
- */
+
 const paginationValidation = [
   query('page')
     .optional()

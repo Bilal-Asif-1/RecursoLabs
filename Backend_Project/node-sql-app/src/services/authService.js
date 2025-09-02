@@ -1,16 +1,8 @@
-/**
- * Auth Service - Handles authentication business logic
- */
 
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-/**
- * Login user
- * @param {object} credentials - User login credentials
- * @returns {Promise<object>} User and token
- */
 exports.login = async (credentials) => {
   const { email, password } = credentials;
 
@@ -43,11 +35,7 @@ exports.login = async (credentials) => {
   };
 };
 
-/**
- * Verify JWT token
- * @param {string} token - JWT token
- * @returns {Promise<object>} Decoded token
- */
+
 exports.verifyToken = async (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -64,11 +52,7 @@ exports.verifyToken = async (token) => {
   }
 };
 
-/**
- * Generate new token
- * @param {object} user - User object
- * @returns {string} JWT token
- */
+
 exports.generateToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email }, 
@@ -77,13 +61,7 @@ exports.generateToken = (user) => {
   );
 };
 
-/**
- * Change password
- * @param {number} userId - User ID
- * @param {string} currentPassword - Current password
- * @param {string} newPassword - New password
- * @returns {Promise<boolean>} Success status
- */
+
 exports.changePassword = async (userId, currentPassword, newPassword) => {
   // Find user
   const user = await User.findByPk(userId);

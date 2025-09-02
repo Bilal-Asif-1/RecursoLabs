@@ -1,16 +1,7 @@
-/**
- * Product Service - Handles business logic for products
- */
-
 const { Product, User } = require('../models');
 const { Op } = require('sequelize');
 
-/**
- * Create a new product
- * @param {object} productData - Product data
- * @param {number} userId - User ID
- * @returns {Promise<object>} Created product
- */
+
 exports.createProduct = async (productData, userId) => {
   const { name, description, price, category, stock } = productData;
 
@@ -33,11 +24,7 @@ exports.createProduct = async (productData, userId) => {
   });
 };
 
-/**
- * Get all products with filtering, pagination and sorting
- * @param {object} options - Query options
- * @returns {Promise<object>} Products and count
- */
+
 exports.getAllProducts = async (options) => {
   const { 
     page = 1, 
@@ -84,11 +71,6 @@ exports.getAllProducts = async (options) => {
   };
 };
 
-/**
- * Get product by ID
- * @param {number} id - Product ID
- * @returns {Promise<object>} Product
- */
 exports.getProductById = async (id) => {
   return await Product.findByPk(id, {
     include: [{
@@ -99,11 +81,7 @@ exports.getProductById = async (id) => {
   });
 };
 
-/**
- * Get products by category
- * @param {string} category - Product category
- * @returns {Promise<Array>} Products
- */
+
 exports.getProductsByCategory = async (category) => {
   return await Product.findAll({
     where: { category },
@@ -115,11 +93,7 @@ exports.getProductsByCategory = async (category) => {
   });
 };
 
-/**
- * Get products by user ID
- * @param {number} userId - User ID
- * @returns {Promise<Array>} Products
- */
+
 exports.getUserProducts = async (userId) => {
   return await Product.findAll({
     where: { userId },
@@ -131,13 +105,7 @@ exports.getUserProducts = async (userId) => {
   });
 };
 
-/**
- * Update product
- * @param {number} id - Product ID
- * @param {object} productData - Updated product data
- * @param {number} userId - User ID
- * @returns {Promise<object>} Updated product
- */
+
 exports.updateProduct = async (id, productData, userId) => {
   // Check if product exists and belongs to user
   const product = await Product.findOne({
@@ -161,12 +129,7 @@ exports.updateProduct = async (id, productData, userId) => {
   });
 };
 
-/**
- * Delete product
- * @param {number} id - Product ID
- * @param {number} userId - User ID
- * @returns {Promise<boolean>} Success status
- */
+
 exports.deleteProduct = async (id, userId) => {
   // Check if product exists and belongs to user
   const product = await Product.findOne({

@@ -1,7 +1,3 @@
-/**
- * Routes Index
- * Centralizes all route configurations
- */
 
 const express = require('express');
 const authRoutes = require('./authRoutes');

@@ -1,16 +1,9 @@
-/**
- * User Service - Handles business logic for users
- */
 
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-/**
- * Register a new user
- * @param {object} userData - User registration data
- * @returns {Promise<object>} User and token
- */
+
 exports.register = async (userData) => {
   const { name, email, password } = userData;
 
@@ -47,11 +40,7 @@ exports.register = async (userData) => {
   };
 };
 
-/**
- * Login user
- * @param {object} credentials - User login credentials
- * @returns {Promise<object>} User and token
- */
+
 exports.login = async (credentials) => {
   const { email, password } = credentials;
 
@@ -84,33 +73,21 @@ exports.login = async (credentials) => {
   };
 };
 
-/**
- * Get all users
- * @returns {Promise<Array>} Users
- */
+
 exports.getAllUsers = async () => {
   return await User.findAll({
     attributes: ['id', 'name', 'email', 'createdAt']
   });
 };
 
-/**
- * Get user by ID
- * @param {number} id - User ID
- * @returns {Promise<object>} User
- */
+
 exports.getUserById = async (id) => {
   return await User.findByPk(id, {
     attributes: ['id', 'name', 'email', 'createdAt']
   });
 };
 
-/**
- * Update user
- * @param {number} id - User ID
- * @param {object} userData - Updated user data
- * @returns {Promise<object>} Updated user
- */
+
 exports.updateUser = async (id, userData) => {
   const user = await User.findByPk(id);
   

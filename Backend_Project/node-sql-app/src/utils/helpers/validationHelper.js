@@ -1,22 +1,10 @@
-/**
- * Utility functions for data validation
- */
 
-/**
- * Validate email format
- * @param {string} email - Email to validate
- * @returns {boolean} True if email is valid
- */
 exports.isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-/**
- * Validate password strength
- * @param {string} password - Password to validate
- * @returns {object} Validation result with status and message
- */
+
 exports.validatePassword = (password) => {
   if (!password || password.length < 8) {
     return {
@@ -72,12 +60,6 @@ exports.sanitizeInput = (input) => {
     .replace(/\//g, '&#x2F;');
 };
 
-/**
- * Validate and sanitize request data
- * @param {object} data - Request data to validate
- * @param {array} requiredFields - Array of required field names
- * @returns {object} Validation result with status and errors
- */
 exports.validateRequestData = (data, requiredFields = []) => {
   const errors = {};
   let isValid = true;

@@ -38,13 +38,13 @@ const startServer = async () => {
     
     // Start server
     app.listen(appConfig.port, () => {
-      console.log(`🚀 Server running on port ${appConfig.port}`);
-      console.log(`📖 Health Check: http://localhost:${appConfig.port}/health`);
-      console.log(`🧪 Test API: http://localhost:${appConfig.port}/api/test`);
+      console.log(`Server running on port ${appConfig.port}`);
+      console.log(`Health Check: http://localhost:${appConfig.port}/health`);
+      console.log(`Test API: http://localhost:${appConfig.port}/api/test`);
     });
   } catch (error) {
-    console.error('❌ Unable to start server:', error);
-    console.log('💡 Make sure MySQL is running and credentials are correct in .env file');
+    console.error('Unable to start server:', error);
+    console.log('Make sure MySQL is running and credentials are correct in .env file');
     process.exit(1);
   }
 };
