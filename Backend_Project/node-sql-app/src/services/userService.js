@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.register = async (userData) => {
-  const { name, email, password } = userData;
+  const { name, email, password, role = 'user' } = userData;
 
   // Check if user exists
   const existingUser = await User.findOne({ where: { email } });
@@ -20,12 +20,13 @@ exports.register = async (userData) => {
   const user = await User.create({ 
     name, 
     email, 
-    password: hashedPassword 
+    password: hashedPassword,
+    role
   });
 
   // Generate JWT token
   const token = jwt.sign(
-    { id: user.id, email: user.email }, 
+    { id: user.id, email: user.email, role: user.role }, 
     process.env.JWT_SECRET, 
     { expiresIn: '24h' }
   );
@@ -34,7 +35,8 @@ exports.register = async (userData) => {
     user: { 
       id: user.id, 
       name: user.name, 
-      email: user.email 
+      email: user.email,
+      role: user.role
     },
     token
   };
@@ -58,7 +60,7 @@ exports.login = async (credentials) => {
 
   // Generate JWT token
   const token = jwt.sign(
-    { id: user.id, email: user.email }, 
+    { id: user.id, email: user.email, role: user.role }, 
     process.env.JWT_SECRET, 
     { expiresIn: '24h' }
   );
@@ -67,7 +69,8 @@ exports.login = async (credentials) => {
     user: { 
       id: user.id, 
       name: user.name, 
-      email: user.email 
+      email: user.email,
+      role: user.role
     },
     token
   };
@@ -76,14 +79,14 @@ exports.login = async (credentials) => {
 
 exports.getAllUsers = async () => {
   return await User.findAll({
-    attributes: ['id', 'name', 'email', 'createdAt']
+    attributes: ['id', 'name', 'email', 'role', 'createdAt']
   });
 };
 
 
 exports.getUserById = async (id) => {
   return await User.findByPk(id, {
-    attributes: ['id', 'name', 'email', 'createdAt']
+    attributes: ['id', 'name', 'email', 'role', 'createdAt']
   });
 };
 
@@ -106,6 +109,7 @@ exports.updateUser = async (id, userData) => {
     id: user.id,
     name: user.name,
     email: user.email,
+    role: user.role,
     createdAt: user.createdAt
   };
 };

@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         len: [6, 100],
       },
     },
+    role: {
+      type: DataTypes.ENUM('user', 'admin'),
+      allowNull: false,
+      defaultValue: 'user',
+    },
   }, {
     tableName: 'Users',
     timestamps: true,

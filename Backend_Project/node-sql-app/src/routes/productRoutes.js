@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { ProductController, ProductQueryController } = require('../controllers/product');
 const auth = require('../middleware/auth');
+const { isAdmin } = require('../middleware/roleCheck');
 const {
   productCreateValidation,
   productUpdateValidation,
@@ -19,16 +20,16 @@ router.use(auth);
 // Get user's products (must come before /:id route)
 router.get('/user/my-products', paginationValidation, ProductQueryController.getUserProducts);
 
-// Create product
-router.post('/', productCreateValidation, ProductController.createProduct);
+// Create product (admin only)
+router.post('/', productCreateValidation, isAdmin, ProductController.createProduct);
 
 // Get Product by ID (must come after specific routes)
 router.get('/:id', idParamValidation, ProductController.getProductById);
 
-// Update product
-router.put('/:id', idParamValidation, productUpdateValidation, ProductController.updateProduct);
+// Update product (admin only)
+router.put('/:id', idParamValidation, productUpdateValidation, isAdmin, ProductController.updateProduct);
 
-// Delete product
-router.delete('/:id', idParamValidation, ProductController.deleteProduct);
+// Delete product (admin only)
+router.delete('/:id', idParamValidation, isAdmin, ProductController.deleteProduct);
 
 module.exports = router;
